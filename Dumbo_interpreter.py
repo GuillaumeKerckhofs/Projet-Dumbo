@@ -1,6 +1,16 @@
 from lark import Lark
 
 grammar = """
+programme: txt | txt programme |dumbo_bloc | dumbo_bloc programme
+txt: /[a-zA-Z0-9;&<>"_\=\-\.\/\n\s:,]+/
+dumbo_block: "{{" "}}" | "{{" expressions_list "}}" 
+expressions_list: expression ";" expressions_list  |  expression ";" 
+
+expression: "print" string_expression | for_string | for_var | variable ":=" string_list | variable ":=" string_expression |variable ":=" string_list | if
+if: "if"  boolean "do" expressions_list "endif"
+for_string: "for" variable "in" string_list "do" expressions_list "endfor"
+for_var: "for" variable "in" variable "do" expressions_list "endfor"
+
 start: WORD "," WORD " " WORD "!"
 %import common.WORD
 %ignore " "
