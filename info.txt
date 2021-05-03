@@ -1,0 +1,5 @@
+python Dumbo_interpreter.py data_t1.dumbo template1.dumbo output1.html
+
+python Dumbo_interpreter.py data_t2.dumbo template2.dumbo output2.html
+
+python Dumbo_interpreter.py data_t3.dumbo template3.dumbo output3.html
