@@ -6,8 +6,10 @@ txt: /[a-zA-Z0-9;&<>"_\=\-\.\/\n\s:,]+/
 dumbo_bloc: "{{" "}}" | "{{" expressions_list "}}" 
 expressions_list: expression ";" expressions_list  |  expression ";" 
 
-expression: "print" string_expression | for_string | for_var | variable ":=" string_list | variable ":=" string_expression |variable ":=" string_list | if
+expression: "print" string_expression | for_string | for_var | variable ":=" integer | variable ":=" string_expression | variable ":=" string_list | if
 if: "if"  boolean "do" expressions_list "endif"
+
+for: for_string | for_var
 for_string: "for" variable "in" string_list "do" expressions_list "endfor"
 for_var: "for" variable "in" variable "do" expressions_list "endfor"
 
@@ -26,7 +28,8 @@ dif: "-"
 mul: "*"
 div: "/"
 
-op : bigger | lower | eq | neq
+op : add | dif | mul | div 
+comp : bigger | lower | eq | neq
 
 bigger: ">"
 lower: "<"
@@ -36,10 +39,11 @@ neq:"!="
 or: boolean ("or" boolean)*
 and: boolean ("and" boolean)*
 
-boolean: true | false | or | and | integer op integer
+boolean: true | false | or | and | var comp var
 true: "true"
 false: "false"
 
+var: int | variable
 
 %import common.WS
 %ignore WS
@@ -61,20 +65,21 @@ def interpreter(root):
         for object in root.children:
             interpreter(object)
     elif (root.data == "expression"):
+        print("je rentre")
         if (root.children[0].data == "string_expression"):
             print("string_expression")
         elif (root.children[0].data == "variable"):
             print("variable")
-        elif (root.children[0].data == "for_loop"):
+        elif (root.children[0].data == "for"):
             print("for")
-        elif (root.children[0].data == "if_exp"):
+        elif (root.children[0].data == "if"):
             print("if")
 
 
 if  __name__ == '__main__':
     import sys
     if len(sys.argv)!=3:
-        print ("erreur, 4 argument attendu")
+        print ("erreur, 2 argument attendu")
     else:
         dataf = sys.argv[1]
         templatef = sys.argv[2]
@@ -84,12 +89,12 @@ if  __name__ == '__main__':
         with open(dataf,'r') as f1:
             if (f1 != None):
                 data = parse(f1.read())
-                print("oui 1")
+
 
         with open(templatef, 'r') as f2:
             if (f2 != None):
                 template = parse(f2.read())
-                print("oui 2")
+
         interpreter(data)
         interpreter(template)
 
