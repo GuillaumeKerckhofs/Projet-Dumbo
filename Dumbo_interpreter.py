@@ -11,7 +11,21 @@ if: "if"  boolean "do" expressions_list "endif"
 for_string: "for" variable "in" string_list "do" expressions_list "endfor"
 for_var: "for" variable "in" variable "do" expressions_list "endfor"
 
-start: WORD "," WORD " " WORD "!"
+variable: /[a-zA-Z0-9_]+/
+string: "'" txt "'"
+
+add: "+"
+dif: "-"
+mul: "*"
+div: "/"
+
+op : bigger | lower | eq | neq
+
+bigger: ">"
+lower: "<"
+eq: "="
+neq:"!="
+
 %import common.WORD
 %ignore " "
 """
@@ -23,12 +37,12 @@ parser = Lark(grammar)
 
 if  __name__ == '__main__':
     import sys
-    if len(sys.argv)!=4:
+    if len(sys.argv)!=3:
         print ("erreur, 4 argument attendu")
     else:
         dataf = sys.argv[1]
-        templatef = sys.argv[1]
-        outputf = sys.argv[1]
+        templatef = sys.argv[2]
+
 
         with open(dataf,'r') as f1:
             if (f1 != None):
@@ -38,8 +52,7 @@ if  __name__ == '__main__':
             if (f2 != None):
                 template = grammar.parse(f2.read())
 
-        with open(outputf, 'w') as f3:
-            print("ué")
+
 
     print(parser.parse("Hello, oui world!"))
     print(parser.parse("Adios, no amigo!"))
