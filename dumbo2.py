@@ -1,58 +1,53 @@
 from lark import Lark
 
-grammar =  r"""
-    programme: txt | txt programme | dumbo_bloc | dumbo_bloc programme
-    txt: /[a-zA-Z0-9;&<>"_\=\-\.\/\n\s:,]+/
-    dumbo_bloc: "{{" expression_list "}}" | "{{" "}}"
-    expression_list: expression ";" expression_list | expression ";"
-    expression: "print" string_expression
-               |for
-               |if
-               |variable ":=" integer
-               |variable ":=" string_expression
-               |variable ":=" string_list
-    string_expression: string | variable | string_expression "." string_expression
-    string_list: "(" string_list_interior ")"
-    string_list_interior: string | string "," string_list_interior
-    
+grammar = r"""
+programme: txt | txt programme |dumbo_bloc | dumbo_bloc programme
+txt: /[a-zA-Z0-9;&<>"_\=\-\.\/\n\s:,]+/
+dumbo_bloc: "{{" "}}" | "{{" expression_list "}}" 
+expression_list: expression ";" expression_list  |  expression ";" 
 
-    if: "if"  boolean "do" expression_list "endif"
-    for: "for" variable "in" string_list "do" expression_list "endfor" | "for" variable "in" variable "do" expression_list "endfor"
+expression: "print" string_expression | for | variable ":=" integer | variable ":=" string_expression | variable ":=" string_list | if
 
-    
-    
-    int: /[0-9]+/ | "-" int
-    variable: /[a-zA-Z0-9_]+/
-    string: "'" txt "'"
+if: "if"  boolean "do" expression_list "endif"
+for: for_string | for_var
+for_string: variable "in" string_list "do" expression_list "endfor" 
+for_var: "for" variable "in" variable "do" expression_list "endfor"
 
-    integer:  integer op integer | variable op integer | integer op variable | int
- 
-    
-    add: "+"
-    dif: "-"
-    mul: "*"
-    div: "/"
+string_expression: string | variable | string_expression "." string_expression
+string_list: "(" string_list_interior ")"
+string_list_interior: string | string "," string_list_interior
 
-    op : add | dif | mul | div 
-    comp : bigger | lower | eq | neq
+int: /[0-9]+/ | "-" int
+variable: /[a-zA-Z0-9_]+/
+string: "'" txt "'"
 
-    bigger: ">"
-    lower: "<"
-    eq: "="
-    neq:"!="
-    
-    or: boolean ("or" boolean)*
-    and: boolean ("and" boolean)*
-    
-    boolean: true | false | or | and | var comp var
-    true: "true"
-    false: "false"
-    
-    var: int | variable
+integer:  integer op integer | variable op integer | integer op variable | int
 
-    %import common.WS
-    %ignore WS
-    """
+add: "+"
+dif: "-"
+mul: "*"
+div: "/"
+
+op : add | dif | mul | div 
+comp : bigger | lower | eq | neq
+
+bigger: ">"
+lower: "<"
+eq: "="
+neq:"!="
+
+or: boolean ("or" boolean)*
+and: boolean ("and" boolean)*
+
+boolean: true | false | or | and | var comp var
+true: "true"
+false: "false"
+
+var: int | variable
+
+%import common.WS
+%ignore WS
+"""
 
 
 
@@ -78,9 +73,9 @@ def interpreter(root):
             print("string_expression")
         elif (root.children[0].data == "variable"):
             print("variable")
-        elif (root.children[0].data == "for_loop"):
+        elif (root.children[0].data == "for"):
             print("for")
-        elif (root.children[0].data == "if_exp"):
+        elif (root.children[0].data == "if"):
             print("if")
 
 
