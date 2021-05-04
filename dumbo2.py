@@ -6,8 +6,8 @@ txt: /[a-zA-Z0-9;&<>"_\=\-\.\/\n\s:,]+/
 dumbo_bloc: "{{" "}}" | "{{" expressions_list "}}" 
 expressions_list: expression ";" expressions_list  |  expression ";" 
 
-expression: "print" string_expression | for_string | for_var | variable ":=" string_list | variable ":=" string_expression |variable ":=" string_list
-
+expression: "print" string_expression | for_string | for_var | variable ":=" string_list | variable ":=" string_expression |variable ":=" string_list | if
+if: "if"  boolean "do" expressions_list "endif"
 for_string: "for" variable "in" string_list "do" expressions_list "endfor"
 for_var: "for" variable "in" variable "do" expressions_list "endfor"
 
@@ -17,6 +17,8 @@ string_list_interior: string | string "," string_list_interior
 
 variable: /[a-zA-Z0-9_]+/
 string: "'" txt "'"
+
+integer:  integer op integer | variable op integer | integer op variable | int
 
 add: "+"
 dif: "-"
@@ -30,6 +32,10 @@ lower: "<"
 eq: "="
 neq:"!="
 
+or: boolean ("or" boolean)*
+and: boolean ("and" boolean)*
+
+boolean: true | false | or | and | integer op integer
 
 
 %import common.WORD

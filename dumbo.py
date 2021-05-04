@@ -15,6 +15,7 @@ string_expression: string | variable | string_expression "." string_expression
 string_list: "(" string_list_interior ")"
 string_list_interior: string | string "," string_list_interior
 
+int: /[0-9]+/ | "-" int
 variable: /[a-zA-Z0-9_]+/
 string: "'" txt "'"
 
@@ -36,15 +37,38 @@ or: boolean ("or" boolean)*
 and: boolean ("and" boolean)*
 
 boolean: true | false | or | and | integer op integer
+true: "true"
+false: "false"
 
 
-%import common.WORD
-%ignore " "
+%import common.WS
+%ignore WS
 """
 
-parser = Lark(grammar)
+parser = Lark(grammar, start='programme')
+parse = parser.parse
 
-
+def interpreter(root):
+    if(root.data=="programme"):
+        for object in root.children:
+            interpreter(object)
+    elif (root.data == "txt"):
+        print("texte")
+    elif (root.data == "dumbo_bloc"):
+        for object in root.children:
+            interpreter(object)
+    elif (root.data == "expression_list"):
+        for object in root.children:
+            interpreter(object)
+    elif (root.data == "expression"):
+        if (root.children[0].data == "string_expression"):
+            print("string_expression")
+        elif (root.children[0].data == "variable"):
+            print("variable")
+        elif (root.children[0].data == "for_loop"):
+            print("for")
+        elif (root.children[0].data == "if_exp"):
+            print("if")
 
 
 if  __name__ == '__main__':
@@ -59,13 +83,11 @@ if  __name__ == '__main__':
 
         with open(dataf,'r') as f1:
             if (f1 != None):
-                data = grammar.parse(f1.read())
+                data = parse(f1.read())
+                print("oui 1")
 
         with open(templatef, 'r') as f2:
             if (f2 != None):
-                template = grammar.parse(f2.read())
+                template = parse(f2.read())
+                print("oui 2")
 
-
-
-    print(parser.parse("Hello, oui world!"))
-    print(parser.parse("Adios, no amigo!"))
