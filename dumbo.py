@@ -18,6 +18,8 @@ string_list_interior: string | string "," string_list_interior
 variable: /[a-zA-Z0-9_]+/
 string: "'" txt "'"
 
+integer:  integer op integer | variable op integer | integer op variable | int
+
 add: "+"
 dif: "-"
 mul: "*"
@@ -30,8 +32,10 @@ lower: "<"
 eq: "="
 neq:"!="
 
-or: test ("or" test)*
-and: test ("and" test)*
+or: boolean ("or" boolean)*
+and: boolean ("and" boolean)*
+
+boolean: true | false | or | and | integer op integer
 
 
 %import common.WORD
@@ -50,6 +54,7 @@ if  __name__ == '__main__':
     else:
         dataf = sys.argv[1]
         templatef = sys.argv[2]
+        output=sys.stdout
 
 
         with open(dataf,'r') as f1:
