@@ -1,6 +1,6 @@
 from lark import Lark
 
-grammar = """
+grammar = r"""
 programme: txt | txt programme |dumbo_bloc | dumbo_bloc programme
 txt: /[a-zA-Z0-9;&<>"_\=\-\.\/\n\s:,]+/
 dumbo_bloc: "{{" "}}" | "{{" expressions_list "}}" 
@@ -90,4 +90,6 @@ if  __name__ == '__main__':
             if (f2 != None):
                 template = parse(f2.read())
                 print("oui 2")
+        interpreter(data)
+        interpreter(template)
 
