@@ -6,49 +6,49 @@ grammar =  r"""
     dumbo_bloc: "{{" expression_list "}}" | "{{" "}}"
     expression_list: expression ";" expression_list | expression ";"
     expression: "print" string_expression
-               |for_loop
-               |if_exp
+               |for
+               |if
                |variable ":=" integer
                |variable ":=" string_expression
                |variable ":=" string_list
     string_expression: string | variable | string_expression "." string_expression
     string_list: "(" string_list_interior ")"
     string_list_interior: string | string "," string_list_interior
+    
+
+    if: "if"  boolean "do" expression_list "endif"
+    for: "for" variable "in" string_list "do" expression_list "endfor" | "for" variable "in" variable "do" expression_list "endfor"
+
+    
+    
+    int: /[0-9]+/ | "-" int
     variable: /[a-zA-Z0-9_]+/
     string: "'" txt "'"
 
-    for_loop: "for" variable "in" string_list "do" expression_list "endfor"
-             |"for" variable "in" variable "do" expression_list "endfor"
-    if_exp: "if" bool "do" expression_list "endif"
-
+    integer:  integer op integer | variable op integer | integer op variable | int
+ 
+    
     add: "+"
     dif: "-"
     mul: "*"
     div: "/"
 
-    gt: ">"
-    lt: "<"
+    op : add | dif | mul | div 
+    comp : bigger | lower | eq | neq
+
+    bigger: ">"
+    lower: "<"
     eq: "="
     neq:"!="
     
-    int: /[0-9]+/ | "-" int
-
-    op: add|dif|mul|div
-
-    integer:  integer op integer 
-    | variable op integer
-    | integer op variable
-    | int
-
-    var: int | variable
-    cmp: gt | lt | eq | neq
-    bool_exp: or | and
-    true : "true"
+    or: boolean ("or" boolean)*
+    and: boolean ("and" boolean)*
+    
+    boolean: true | false | or | and | var comp var
+    true: "true"
     false: "false"
-    bool: true | false | bool_exp | var cmp var
-
-    or: "(" bool "or" bool ")"
-    and: "(" bool "and" bool ")"
+    
+    var: int | variable
 
     %import common.WS
     %ignore WS

@@ -3,15 +3,15 @@ from lark import Lark
 grammar = r"""
 programme: txt | txt programme |dumbo_bloc | dumbo_bloc programme
 txt: /[a-zA-Z0-9;&<>"_\=\-\.\/\n\s:,]+/
-dumbo_bloc: "{{" "}}" | "{{" expressions_list "}}" 
-expressions_list: expression ";" expressions_list  |  expression ";" 
+dumbo_bloc: "{{" "}}" | "{{" expression_list "}}" 
+expression_list: expression ";" expression_list  |  expression ";" 
 
-expression: "print" string_expression | for_string | for_var | variable ":=" integer | variable ":=" string_expression | variable ":=" string_list | if
-if: "if"  boolean "do" expressions_list "endif"
+expression: "print" string_expression | for | variable ":=" integer | variable ":=" string_expression | variable ":=" string_list | if
 
+if: "if"  boolean "do" expression_list "endif"
 for: for_string | for_var
-for_string: "for" variable "in" string_list "do" expressions_list "endfor"
-for_var: "for" variable "in" variable "do" expressions_list "endfor"
+for_string: variable "in" string_list "do" expression_list "endfor" 
+for_var: "for" variable "in" variable "do" expression_list "endfor"
 
 string_expression: string | variable | string_expression "." string_expression
 string_list: "(" string_list_interior ")"
