@@ -69,9 +69,9 @@ def interpreter(root):
         elif (root.children[0].data == "variable"):
             initializeVariable(root)
         elif (root.children[0].data == "for"):
-            output.write("for")
+            for_ (root.children[0])
         elif (root.children[0].data == "if"):
-            output.write("if")
+            if_ (root.children[0])
 
 def string_expression(root):
 
@@ -126,7 +126,7 @@ def string_list_interior(list,root):
         return list
 
 
-def for_loop(root, output_file):
+def for_(root):
     Key = str(root.children[0].children[0])
 
     Temp = None
@@ -135,12 +135,12 @@ def for_loop(root, output_file):
         Temp = variables.pop(Key)
 
     if(root.children[1].data == "string_list"):
-        liste = string_list_interior(root.children[1], [])
+        list = string_list_interior([],root.children[1])
     elif(root.children[1].data == "variable"):
-        liste = variables[root.children[1].children[0]]
-    for element in liste:
+        list = variables[root.children[1].children[0]]
+    for element in list:
         variables[Key] = element
-        interpreter(root.children[2], output_file)
+        interpreter(root.children[2])
     if(Temp != None):
         variables[Key] = Temp
     else:
