@@ -127,20 +127,21 @@ def string_list_interior(list,root):
 def for_(root):
     Key = str(root.children[0].children[0])
 
-    Temp = None
+    tmp = None
 
     if(variables.__contains__(Key)):
-        Temp = variables.pop(Key)
+        tmp = variables.pop(Key)
 
     if(root.children[1].data == "string_list"):
-        list = string_list_interior([],root.children[1])
+        list=[]
+        string_list_interior(list,root.children[1])
     elif(root.children[1].data == "variable"):
         list = variables[root.children[1].children[0]]
     for element in list:
         variables[Key] = element
         interpreter(root.children[2])
-    if(Temp != None):
-        variables[Key] = Temp
+    if(tmp != None):
+        variables[Key] = tmp
     else:
         variables.pop(Key)
 
@@ -155,7 +156,7 @@ def boolean(root):
     if (root.children[0].data == "true"):
         return True
 
-    elif (root.childre[0].data == "false"):
+    elif (root.children[0].data == "false"):
         return False
 
     elif(root.children[0].children[0].data == "or"):
