@@ -65,7 +65,7 @@ def interpreter(root):
         output.write(root.children[0])
     elif (root.data == "expression"):
         if (root.children[0].data == "string_expression"):
-            output.write(string_expression(root.children[0]))
+            output.write(str(string_expression(root.children[0])))
         elif (root.children[0].data == "variable"):
             output.write("variable")
         elif (root.children[0].data == "for"):
@@ -79,9 +79,12 @@ def string_expression(root):
         return(str(root.children[0].children[0].children[0]))
     elif (root.children[0].data=="variable"):
         output.write(" oui ")
-        output.write(str(variables[root.children[0]])) #mapping?
+        return(str(variable(root.children[0]))) #mapping?
     else:
         return string_expression(root.children[0]) + string_expression(root.children[1])
+
+def variable(root):
+    return variables[root.children[0]]
 
 def initializeVariable(root):
     if(root.children[1].data=="string_expression"):
@@ -99,9 +102,9 @@ def integer(root):
     else:
         operator= str(root.children[0].data)
         if (root.children[0].data == "variable" and root.children[2].data == "integer"):
-            return op(variables(root.children[0].children[0]),operator, integer(root.children[2]))
+            return op(variable(root.children[0]),operator, integer(root.children[2]))
         elif (root.children[0].data == "integer" and root.children[2].data == "variable"):
-            return op(integer(root.children[0]), operator, variables(root.children[2].children[0]))
+            return op(integer(root.children[0]), operator, variable(root.children[2]))
         elif (root.children[0].data == "integer" and root.children[2].data == "integer"):
             return op(integer(root.children[0]),operator , integer(root.children[2]))
 
@@ -123,7 +126,29 @@ def string_list_interior(list,root):
         list.append(str(root.children[0].children[0].children[0]))
         return list
 
-def if_exp(root):
+
+def for_loop(root, output_file):
+    Key = str(root.children[0].children[0])
+
+    Temp = None
+
+    if(variables.__contains__(Key)):
+        Temp = variables.pop(Key)
+
+    if(root.children[1].data == "string_list"):
+        liste = string_list_interior(root.children[1], [])
+    elif(root.children[1].data == "variable"):
+        liste = variables[root.children[1].children[0]]
+    for element in liste:
+        variables[Key] = element
+        interpreter(root.children[2], output_file)
+    if(Temp != None):
+        variables[Key] = Temp
+    else:
+        variables.pop(Key)
+
+
+def if_(root):
     if(boolean(root.children[0])):
         interpreter(root.children[1])
 
@@ -157,7 +182,7 @@ def num(root):
     if(root.children[0] == "int"):
         return int(root.children[0].children[0])
     elif(root.children[0] == "variable"):
-        return int(mapping[root.children[0]])
+        return int(variable(root.children[0]))
 
 
 
