@@ -95,7 +95,18 @@ def initializeVariable(root):
         variables[root.children[0].children[0]]=tuple(tmp)
 
 def integer(root):
-
+    if (len(root.children) == 1):
+        return int(root.children[0].children[0])
+    else:
+        if (root.children[0].data == "variable" and root.children[2].data == "integer"):
+            return op(root.children[1], variable_value(
+                root.children[0]), integer(root.children[2]))
+        elif (root.children[0].data == "integer" and root.children[2].data == "variable"):
+            return op(root.children[1], integer(root.children[0]),
+                      variable_value(root.children[2]))
+        elif (root.children[0].data == "integer" and root.children[2].data == "integer"):
+            return op(root.children[1], integer(root.children[0]),
+                      integer(root.children[2]))
 
 def listCreation(list,root):
     if (len(root.children) > 1):
