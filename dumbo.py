@@ -152,7 +152,6 @@ def if_(root):
 
 
 def boolean(root):
-
     if (root.children[0].data == "true"):
         return True
 
@@ -166,7 +165,7 @@ def boolean(root):
         return boolean(root.children[0]) and boolean(root.children[1])
 
     elif(root.children[0].data == "num"):
-        comp = root.children[1].data
+        comp = root.children[1].children[0].data
         if (comp == "bigger"):
             return num(root.children[0]) > num(root.children[2])
         elif (comp == "lower"):
@@ -177,9 +176,9 @@ def boolean(root):
             return num(root.children[0]) != num(root.children[2])
 
 def num(root):
-    if(root.children[0] == "int"):
+    if(root.children[0].data == "int"):
         return int(root.children[0].children[0])
-    elif(root.children[0] == "variable"):
+    elif(root.children[0].data == "variable"):
         return int(variable(root.children[0]))
 
 
