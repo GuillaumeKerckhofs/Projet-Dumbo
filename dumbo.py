@@ -97,7 +97,7 @@ def integer(root):
     if (len(root.children) == 1):
         return int(root.children[0].children[0])
     else:
-        operator= str(root.children[0].data)
+        operator= str(root.children[1].children[0].data)
         if (root.children[0].data == "variable" and root.children[2].data == "integer"):
             return op(variable(root.children[0]),operator, integer(root.children[2]))
         elif (root.children[0].data == "integer" and root.children[2].data == "variable"):
