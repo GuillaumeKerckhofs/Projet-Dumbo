@@ -65,7 +65,7 @@ def interpreter(root):
         output.write(root.children[0])
     elif (root.data == "expression"):
         if (root.children[0].data == "string_expression"):
-            string_expression(root.children[0])
+            output.write(string_expression(root.children[0]))
         elif (root.children[0].data == "variable"):
             output.write("variable")
         elif (root.children[0].data == "for"):
@@ -76,13 +76,11 @@ def interpreter(root):
 def string_expression(root):
 
     if (root.children[0].data=="string"):
-        output.write(str(root.children[0].children[0].children[0]))
+        return(str(root.children[0].children[0].children[0]))
     elif (root.children[0].data=="variable"):
-        output.write(" oui ")
-        output.write(str(mapping[root.children[0]])) #mapping?
+        return (str(root.children[0])) #mapping?
     else:
-        string_expression(root.children[0])
-        string_expression(root.children[1])
+        return string_expression(root.children[0]) + string_expression(root.children[1])
 
 def initializeVariable(root):
     if(root.children[1].data=="string_expression"):
@@ -91,7 +89,7 @@ def initializeVariable(root):
         variables[root.children[0].children[0]]=integer(root.children[1])
     elif(root.children[1].data=="string_list"):
         tmp = []
-        listCreation(tmp,root.children[1].children[0])
+        string_list_interior(tmp,root.children[1].children[0])
         variables[root.children[0].children[0]]=tuple(tmp)
 
 def integer(root):
@@ -108,10 +106,10 @@ def integer(root):
             return op(root.children[1], integer(root.children[0]),
                       integer(root.children[2]))
 
-def listCreation(list,root):
+def string_list_interior(list,root):
     if (len(root.children) > 1):
         list.append(str(root.children[0].children[0].children[0]))
-        listCreation(list,root.children[1])
+        string_list_interior(list,root.children[1])
     else:
         list.append(str(root.children[0].children[0].children[0]))
         return list
@@ -150,7 +148,7 @@ def num(root):
     if(root.children[0] == "int"):
         return int(root.children[0].children[0])
     elif(root.children[0] == "variable"):
-        return int(mapping[root.children[0]])
+        return int(root.children[0]) #mapping?
 
 
 
