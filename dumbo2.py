@@ -1,4 +1,5 @@
 from lark import Lark
+import sys
 
 grammar = r"""
 programme: txt | txt programme |dumbo_bloc | dumbo_bloc programme
@@ -51,52 +52,54 @@ var: int | variable
 
 
 
-
 parser = Lark(grammar, start='programme')
 parse = parser.parse
 
+output=sys.stdout
+
 def interpreter(root):
-    if(root.data=="programme"):
+    if(root.data=="programme" or root.data == "dumbo_bloc" or root.data == "expression_list"):
         for object in root.children:
             interpreter(object)
     elif (root.data == "txt"):
-        print("texte")
-    elif (root.data == "dumbo_bloc"):
-        for object in root.children:
-            interpreter(object)
-    elif (root.data == "expression_list"):
-        for object in root.children:
-            interpreter(object)
+        output.write(root.children[0])
+    #elif (root.data == "dumbo_bloc"):
+    #    for object in root.children:
+    #        interpreter(object)
+    #elif (root.data == "expression_list"):
+    #    for object in root.children:
+    #        interpreter(object)
     elif (root.data == "expression"):
-        print("je rentre")
+        output.write("je rentre")
         if (root.children[0].data == "string_expression"):
-            print("string_expression")
+            output.write("string_expression")
         elif (root.children[0].data == "variable"):
-            print("variable")
+            output.write("variable")
         elif (root.children[0].data == "for"):
-            print("for")
+            output.write("for")
         elif (root.children[0].data == "if"):
-            print("if")
+            output.write("if")
+
+
 
 
 if  __name__ == '__main__':
-    import sys
+
     if len(sys.argv)!=3:
-        print ("erreur, 4 argument attendu")
+        print ("erreur, 2 arguments attendus")
     else:
         dataf = sys.argv[1]
         templatef = sys.argv[2]
-        output=sys.stdout
 
 
-        with open(dataf,'r') as d:
-            if (d != None):
-                data = parse(d.read())
+        with open(dataf,'r') as f1:
+            if (f1 != None):
+                data = parse(f1.read())
 
 
-        with open(templatef, 'r') as t:
-            if (t != None):
-                template = parse(t.read())
+        with open(templatef, 'r') as f2:
+            if (f2 != None):
+                template = parse(f2.read())
 
         interpreter(data)
         interpreter(template)

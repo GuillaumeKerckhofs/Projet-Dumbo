@@ -53,6 +53,8 @@ var: int | variable
 parser = Lark(grammar, start='programme')
 parse = parser.parse
 
+mapping = {}
+
 output=sys.stdout
 
 def interpreter(root):
@@ -61,16 +63,9 @@ def interpreter(root):
             interpreter(object)
     elif (root.data == "txt"):
         output.write(root.children[0])
-    #elif (root.data == "dumbo_bloc"):
-    #    for object in root.children:
-    #        interpreter(object)
-    #elif (root.data == "expression_list"):
-    #    for object in root.children:
-    #        interpreter(object)
     elif (root.data == "expression"):
-        output.write("je rentre")
         if (root.children[0].data == "string_expression"):
-            output.write("string_expression")
+            string_expression(root.children[0])
         elif (root.children[0].data == "variable"):
             output.write("variable")
         elif (root.children[0].data == "for"):
@@ -78,13 +73,22 @@ def interpreter(root):
         elif (root.children[0].data == "if"):
             output.write("if")
 
+def string_expression(root):
+
+    if (root.children[0].data=="string"):
+        output.write(str(root.children[0].children[0].children[0]))
+    elif (root.children[0].data=="variable"):
+        output.write(str(root.children[0])) #mapping?
+    else:
+        string_expression(root.children[0])
+        string_expression(root.children[1])
 
 
 
 if  __name__ == '__main__':
 
     if len(sys.argv)!=3:
-        print ("erreur, 2 argument attendu")
+        print ("erreur, 2 arguments attendus")
     else:
         dataf = sys.argv[1]
         templatef = sys.argv[2]
