@@ -30,7 +30,7 @@ mul: "*"
 div: "/"
 
 op : add | dif | mul | div 
-comp : bigger | lower | eq | neq
+comp : bigger | lower | eq | noteq
 
 bigger: ">"
 lower: "<"
