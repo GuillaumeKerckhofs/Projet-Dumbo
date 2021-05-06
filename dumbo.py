@@ -79,7 +79,7 @@ def string_expression(root):
         output.write(str(root.children[0].children[0].children[0]))
     elif (root.children[0].data=="variable"):
         output.write(" oui ")
-        output.write(str(mapping[root.children[0]])) #mapping?
+        output.write(str(variables[root.children[0]])) #mapping?
     else:
         string_expression(root.children[0])
         string_expression(root.children[1])
@@ -98,15 +98,23 @@ def integer(root):
     if (len(root.children) == 1):
         return int(root.children[0].children[0])
     else:
+        operator= str(root.children[0].data)
         if (root.children[0].data == "variable" and root.children[2].data == "integer"):
-            return op(root.children[1], variable_value(
-                root.children[0]), integer(root.children[2]))
+            return op(variables(root.children[0].children[0]),operator, integer(root.children[2]))
         elif (root.children[0].data == "integer" and root.children[2].data == "variable"):
-            return op(root.children[1], integer(root.children[0]),
-                      variable_value(root.children[2]))
+            return op(integer(root.children[0]), operator, variables(root.children[2].children[0]))
         elif (root.children[0].data == "integer" and root.children[2].data == "integer"):
-            return op(root.children[1], integer(root.children[0]),
-                      integer(root.children[2]))
+            return op(integer(root.children[0]),operator , integer(root.children[2]))
+
+def op(x, operator, y):
+    if(operator == "add"):
+        return x + y
+    elif(operator == "dif"):
+        return x - y
+    elif(operator == "mul"):
+        return x * y
+    elif(operator == "div"):
+        return x / y
 
 def listCreation(list,root):
     if (len(root.children) > 1):
