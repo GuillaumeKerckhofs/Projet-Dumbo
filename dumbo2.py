@@ -10,9 +10,8 @@ expression_list: expression ";" expression_list  |  expression ";"
 expression: "print" string_expression | for | variable ":=" integer | variable ":=" string_expression | variable ":=" string_list | if
 
 if: "if"  boolean "do" expression_list "endif"
-for: for_string | for_var
-for_string: variable "in" string_list "do" expression_list "endfor" 
-for_var: "for" variable "in" variable "do" expression_list "endfor"
+for:  variable "in" string_list "do" expression_list "endfor" | 
+ "for" variable "in" variable "do" expression_list "endfor"
 
 string_expression: string | variable | string_expression "." string_expression
 string_list: "(" string_list_interior ")"
