@@ -53,7 +53,7 @@ var: int | variable
 parser = Lark(grammar, start='programme')
 parse = parser.parse
 
-mapping = {}
+variables = {}
 
 output=sys.stdout
 
@@ -83,6 +83,26 @@ def string_expression(root):
         string_expression(root.children[0])
         string_expression(root.children[1])
 
+def initializeVariable(root):
+    if(root.children[1].data=="string_expression"):
+        variables[root.children[0].children[0]]=string_expression(root.children[1])
+    elif(root.children[1].data=="integer"):
+        variables[root.children[0].children[0]]=integer(root.children[1])
+    elif(root.children[1].data=="string_list"):
+        tmp = []
+        listCreation(tmp,root.children[1].children[0])
+        variables[root.children[0].children[0]]=tuple(tmp)
+
+def integer(root):
+
+
+def listCreation(list,root):
+    if (len(root.children) > 1):
+        list.append(str(root.children[0].children[0].children[0]))
+        listCreation(list,root.children[1])
+    else:
+        list.append(str(root.children[0].children[0].children[0]))
+        return list
 
 
 if  __name__ == '__main__':
