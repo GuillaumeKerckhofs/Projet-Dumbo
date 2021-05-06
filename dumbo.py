@@ -56,17 +56,17 @@ parse = parser.parse
 output=sys.stdout
 
 def interpreter(root):
-    if(root.data=="programme"):
+    if(root.data=="programme" or root.data == "dumbo_bloc" or root.data == "expression_list"):
         for object in root.children:
             interpreter(object)
     elif (root.data == "txt"):
         output.write(root.children[0])
-    elif (root.data == "dumbo_bloc"):
-        for object in root.children:
-            interpreter(object)
-    elif (root.data == "expression_list"):
-        for object in root.children:
-            interpreter(object)
+    #elif (root.data == "dumbo_bloc"):
+    #    for object in root.children:
+    #        interpreter(object)
+    #elif (root.data == "expression_list"):
+    #    for object in root.children:
+    #        interpreter(object)
     elif (root.data == "expression"):
         output.write("je rentre")
         if (root.children[0].data == "string_expression"):
