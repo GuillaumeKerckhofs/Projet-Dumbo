@@ -67,7 +67,7 @@ def interpreter(root):
         if (root.children[0].data == "string_expression"):
             output.write(str(string_expression(root.children[0])))
         elif (root.children[0].data == "variable"):
-            output.write("variable")
+            initializeVariable(root)
         elif (root.children[0].data == "for"):
             output.write("for")
         elif (root.children[0].data == "if"):
@@ -78,8 +78,7 @@ def string_expression(root):
     if (root.children[0].data=="string"):
         return(str(root.children[0].children[0].children[0]))
     elif (root.children[0].data=="variable"):
-        output.write(" oui ")
-        return(str(variable(root.children[0]))) #mapping?
+        return(str(variable(root.children[0])))
     else:
         return string_expression(root.children[0]) + string_expression(root.children[1])
 
