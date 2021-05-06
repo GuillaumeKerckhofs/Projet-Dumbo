@@ -30,21 +30,21 @@ mul: "*"
 div: "/"
 
 op : add | dif | mul | div 
-comp : bigger | lower | eq | neq
+comp : bigger | lower | eq | noteq
 
 bigger: ">"
 lower: "<"
 eq: "="
-neq:"!="
+noteq:"!="
 
 or: boolean ("or" boolean)*
 and: boolean ("and" boolean)*
 
-boolean: true | false | or | and | var comp var
+boolean: true | false | or | and | num comp num
 true: "true"
 false: "false"
 
-var: int | variable
+num: int | variable
 
 %import common.WS
 %ignore WS
@@ -78,7 +78,8 @@ def string_expression(root):
     if (root.children[0].data=="string"):
         output.write(str(root.children[0].children[0].children[0]))
     elif (root.children[0].data=="variable"):
-        output.write(str(root.children[0])) #mapping?
+        output.write(" oui ")
+        output.write(str(mapping[root.children[0]])) #mapping?
     else:
         string_expression(root.children[0])
         string_expression(root.children[1])
@@ -103,6 +104,44 @@ def listCreation(list,root):
     else:
         list.append(str(root.children[0].children[0].children[0]))
         return list
+
+def if_exp(root):
+    if(boolean(root.children[0])):
+        interpreter(root.children[1])
+
+
+def boolean(root):
+
+    if (root.children[0].data == "true"):
+        return True
+
+    elif (root.childre[0].data == "false"):
+        return False
+
+    elif(root.children[0].children[0].data == "or"):
+        return boolean(root.children[0]) or boolean(root.children[1])
+
+    elif(root.children[0].children[0].data == "and"):
+        return boolean(root.children[0]) and boolean(root.children[1])
+
+    elif(root.children[0].data == "num"):
+        comp = root.children[1].data
+        if (comp == "bigger"):
+            return num(root.children[0]) > num(root.children[2])
+        elif (comp == "lower"):
+            return num(root.children[0]) < num(root.children[2])
+        elif(comp == "eq"):
+            return num(root.children[0]) == num(root.children[2])
+        elif(comp == "noteq"):
+            return num(root.children[0]) != num(root.children[2])
+
+def num(root):
+    if(root.children[0] == "int"):
+        return int(root.children[0].children[0])
+    elif(root.children[0] == "variable"):
+        return int(mapping[root.children[0]])
+
+
 
 
 if  __name__ == '__main__':
