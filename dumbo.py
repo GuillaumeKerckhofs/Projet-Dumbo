@@ -1,3 +1,4 @@
+import sys
 from lark import Lark
 
 grammar = r"""
@@ -52,12 +53,14 @@ var: int | variable
 parser = Lark(grammar, start='programme')
 parse = parser.parse
 
+output=sys.stdout
+
 def interpreter(root):
     if(root.data=="programme"):
         for object in root.children:
             interpreter(object)
     elif (root.data == "txt"):
-        print("texte")
+        output.write(root.children[0])
     elif (root.data == "dumbo_bloc"):
         for object in root.children:
             interpreter(object)
@@ -65,25 +68,26 @@ def interpreter(root):
         for object in root.children:
             interpreter(object)
     elif (root.data == "expression"):
-        print("je rentre")
+        output.write("je rentre")
         if (root.children[0].data == "string_expression"):
-            print("string_expression")
+            output.write("string_expression")
         elif (root.children[0].data == "variable"):
-            print("variable")
+            output.write("variable")
         elif (root.children[0].data == "for"):
-            print("for")
+            output.write("for")
         elif (root.children[0].data == "if"):
-            print("if")
+            output.write("if")
+
+
 
 
 if  __name__ == '__main__':
-    import sys
+
     if len(sys.argv)!=3:
         print ("erreur, 2 argument attendu")
     else:
         dataf = sys.argv[1]
         templatef = sys.argv[2]
-        output=sys.stdout
 
 
         with open(dataf,'r') as f1:
