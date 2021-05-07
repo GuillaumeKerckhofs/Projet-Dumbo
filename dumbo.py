@@ -121,7 +121,6 @@ def string_list_interior(list,root):
         string_list_interior(list,root.children[1])
     else:
         list.append(str(root.children[0].children[0].children[0]))
-        return list
 
 
 def for_(root):
