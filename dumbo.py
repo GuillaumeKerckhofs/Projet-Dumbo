@@ -23,11 +23,11 @@ string: "'" txt "'"
 integer:  integer op integer | variable op integer | integer op variable | int
 
 add: "+"
-dif: "-"
-mul: "*"
+diff: "-"
+mult: "*"
 div: "/"
 
-op : add | dif | mul | div 
+op : add | diff | mult | div 
 comp : bigger | lower | eq | noteq
 
 bigger: ">"
@@ -80,9 +80,6 @@ def string_expression(root):
     else:
         return string_expression(root.children[0]) + string_expression(root.children[1])
 
-def variable(root):
-    return variables[root.children[0]]
-
 def initializeVariable(root):
     if(root.children[1].data=="string_expression"):
         variables[root.children[0].children[0]]=string_expression(root.children[1])
@@ -91,7 +88,10 @@ def initializeVariable(root):
     elif(root.children[1].data=="string_list"):
         tmp = []
         string_list_interior(tmp,root.children[1].children[0])
-        variables[root.children[0].children[0]]=tuple(tmp)
+        variables[root.children[0].children[0]]=tmp
+
+def variable(root):
+    return variables[root.children[-1]]
 
 def integer(root):
     if (len(root.children) == 1):
@@ -99,18 +99,18 @@ def integer(root):
     else:
         operator= str(root.children[1].children[0].data)
         if (root.children[0].data == "variable" and root.children[2].data == "integer"):
-            return op(variable(root.children[0]),operator, integer(root.children[2]))
+            return op(variable(root.children[0]), operator, integer(root.children[2]))
         elif (root.children[0].data == "integer" and root.children[2].data == "variable"):
             return op(integer(root.children[0]), operator, variable(root.children[2]))
         elif (root.children[0].data == "integer" and root.children[2].data == "integer"):
-            return op(integer(root.children[0]),operator , integer(root.children[2]))
+            return op(integer(root.children[0]), operator, integer(root.children[2]))
 
 def op(x, operator, y):
     if(operator == "add"):
         return x + y
-    elif(operator == "dif"):
+    elif(operator == "diff"):
         return x - y
-    elif(operator == "mul"):
+    elif(operator == "mult"):
         return x * y
     elif(operator == "div"):
         return x / y
@@ -121,6 +121,43 @@ def string_list_interior(list,root):
         string_list_interior(list,root.children[1])
     else:
         list.append(str(root.children[0].children[0].children[0]))
+
+
+
+def if_(root):
+    if(boolean(root.children[0])):
+        interpreter(root.children[1])
+
+
+def boolean(root):
+    if (root.children[0].data == "true"):
+        return True
+
+    elif (root.children[0].data == "false"):
+        return False
+
+    elif (root.children[0].children[0].data == "and"):
+        return boolean(root.children[0]) and boolean(root.children[1])
+
+    elif(root.children[0].children[0].data == "or"):
+        return boolean(root.children[0]) or boolean(root.children[1])
+
+    elif(root.children[0].data == "num"):
+        comparator = root.children[1].children[0].data
+        if (comparator == "bigger"):
+            return num(root.children[0]) > num(root.children[2])
+        elif (comparator == "lower"):
+            return num(root.children[0]) < num(root.children[2])
+        elif(comparator == "eq"):
+            return num(root.children[0]) == num(root.children[2])
+        elif(comparator == "noteq"):
+            return num(root.children[0]) != num(root.children[2])
+
+def num(root):
+    if(root.children[0].data == "int"):
+        return int(root.children[0].children[0])
+    elif(root.children[0].data == "variable"):
+        return int(variable(root.children[0]))
 
 
 def for_(root):
@@ -143,44 +180,6 @@ def for_(root):
         variables[Key] = tmp
     else:
         variables.pop(Key)
-
-
-def if_(root):
-    if(boolean(root.children[0])):
-        interpreter(root.children[1])
-
-
-def boolean(root):
-    if (root.children[0].data == "true"):
-        return True
-
-    elif (root.children[0].data == "false"):
-        return False
-
-    elif(root.children[0].children[0].data == "or"):
-        return boolean(root.children[0]) or boolean(root.children[1])
-
-    elif(root.children[0].children[0].data == "and"):
-        return boolean(root.children[0]) and boolean(root.children[1])
-
-    elif(root.children[0].data == "num"):
-        comp = root.children[1].children[0].data
-        if (comp == "bigger"):
-            return num(root.children[0]) > num(root.children[2])
-        elif (comp == "lower"):
-            return num(root.children[0]) < num(root.children[2])
-        elif(comp == "eq"):
-            return num(root.children[0]) == num(root.children[2])
-        elif(comp == "noteq"):
-            return num(root.children[0]) != num(root.children[2])
-
-def num(root):
-    if(root.children[0].data == "int"):
-        return int(root.children[0].children[0])
-    elif(root.children[0].data == "variable"):
-        return int(variable(root.children[0]))
-
-
 
 
 if  __name__ == '__main__':
